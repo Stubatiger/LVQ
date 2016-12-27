@@ -20,7 +20,6 @@ my_logger.addHandler(handler)
 
 def euclidean_distance(vect1, vect2):
     dist = np.linalg.norm(vect1 - vect2)
-    #my_logger.debug('Calculating Distance between %s and %s: %s' % (matr1[:, :-1], matr2[:, :-1], dist))
     return dist
 
 # Codebook Init Functions
@@ -30,7 +29,7 @@ distance_functions = {
     "euclidean" : euclidean_distance
 }
 
-# create a random codebook matrix
+# create a single random codeboook
 def random_codebook(train, rnd=None):
     n_records = train.shape[0]
     n_features = train.shape[1]
@@ -52,6 +51,7 @@ def random_codebook(train, rnd=None):
 
     return codebook
 
+# codebook init functions
 codebook_inits = {
     "random" : random_codebook
 }
@@ -67,7 +67,7 @@ class LVQ(sklearn.base.BaseEstimator):
         self.n_codebooks = n_codebooks
         self.distance_func = distance_func
         self.init_codebook = init_codebook
-        self.rnd_seed = 0
+        self.rnd_seed = rnd_seed
 
     def fit(self, X, y):
 

@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_moons, make_circles, make_classification
 import LVQ
 from ConfigParser import SafeConfigParser
 import sys
+import os
 h = .02  # step size in the mesh
 
 def read_config(configfile):
@@ -20,15 +21,24 @@ def read_config(configfile):
         lrate = float(parser.get(section, 'lrate'))
         epochs = int(parser.get(section, 'epochs'))
         n_codebooks = int(parser.get(section, 'n_codebooks'))
-
+        rnd_seed = int(parser.get(section, 'rnd_seed'))
         distance_func = LVQ.distance_functions[parser.get(section, 'distance_func')]
         init_codebook = LVQ.codebook_inits[parser.get(section, 'init_codebook')]
 
-        lvq = LVQ.LVQ(lrate, epochs, n_codebooks, distance_func, init_codebook)
+        lvq = LVQ.LVQ(lrate, epochs, n_codebooks, distance_func, init_codebook, rnd_seed)
         classifiers.append(lvq)
         names.append(name)
 
     return names, classifiers
+
+# check if config file is specified in arguments
+if len(sys.argv) != 2:
+    print "No Conf file specified"
+    sys.exit()
+
+if not os.path.isfile(sys.argv[1]):
+    print "%s is not a file" % sys.argv[1]
+    sys.exit()
 
 names, classifiers = read_config(sys.argv[1])
 
@@ -92,11 +102,6 @@ for ds_cnt, ds in enumerate(datasets):
         # Plot codebooks
         ax.scatter(X_code[:, 0], X_code[:, 1], c=y_code, cmap=cm_bright,s=50, marker='x')
 
-        # Plot also the training points
-        #ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=cm_bright)
-        # and testing points
-        #ax.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap=cm_bright,alpha=0.6)
-
         ax.set_xlim(xx.min(), xx.max())
         ax.set_ylim(yy.min(), yy.max())
         ax.set_xticks(())
@@ -108,4 +113,7 @@ for ds_cnt, ds in enumerate(datasets):
         i += 1
 
 plt.tight_layout()
-plt.show()
+
+savename = "%s.png" % sys.argv[1].split(".")[0]
+plt.savefig(savename)
+
