@@ -51,9 +51,38 @@ def random_codebook(train, rnd=None):
 
     return codebook
 
+def random_class_codebook(train, rnd=None, filterclass = None):
+    n_records = train.shape[0]
+    n_features = train.shape[1]
+    my_logger.debug("Creating random class Codebook with %s records and %s features" % (n_records, n_features))
+
+    codebook = np.zeros(shape=(1, n_features))
+
+    if not filterclass:
+        random_sample = train[random.randrange(n_records)]
+        filterclass = random_sample[-1]
+
+    train_class = [sample for sample in train if sample[-1] == filterclass]
+
+    for i in range(n_features):
+        my_logger.debug('Codebook: %s' % codebook)
+
+        random_sample = train_class[random.randrange(len(train_class))]
+        my_logger.debug("Random Sample: %s" % random_sample)
+
+        random_feature = random_sample[i]
+        my_logger.debug("Setting Feature %s to %s" % (i, random_feature))
+
+        codebook[0, i] = random_feature
+
+    my_logger.debug('Created Random Codebook: %s' % codebook)
+
+    return codebook
+
 # codebook init functions
 codebook_inits = {
-    "random" : random_codebook
+    "random" : random_codebook,
+    "class": random_class_codebook
 }
 ########################################################################################################################
 ########################################################################################################################
