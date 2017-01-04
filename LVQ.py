@@ -5,9 +5,8 @@ import random
 import sklearn
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
-import sys
 from sklearn.metrics import accuracy_score
-
+from scipy.spatial.distance import cityblock
 # Set up a specific logger with our desired output level
 my_logger = logging.getLogger('LVQ')
 my_logger.setLevel(logging.INFO)
@@ -17,19 +16,26 @@ handler = logging.StreamHandler()
 my_logger.addHandler(handler)
 
 
+######### Distance Functions
 
 def euclidean_distance(vect1, vect2):
     dist = np.linalg.norm(vect1 - vect2)
     return dist
 
-# Codebook Init Functions
+def cityblock_distance(vect1, vect2):
+    dist = cityblock(vect1, vect2)
+    return dist
 
-# distance functions
+
+
+# distance functions dict
 distance_functions = {
-    "euclidean" : euclidean_distance
+    "euclidean" : euclidean_distance,
+    "cityblock": cityblock_distance
 }
 
-# create a single random codeboook
+########## Codebook Init Functions
+
 def random_codebook(train, rnd=None):
     n_records = train.shape[0]
     n_features = train.shape[1]
@@ -75,11 +81,11 @@ def random_class_codebook(train, rnd=None, filterclass = None):
 
         codebook[0, i] = random_feature
 
-    my_logger.debug('Created Random Codebook: %s' % codebook)
+    my_logger.debug('Created Random class Codebook: %s' % codebook)
 
     return codebook
 
-# codebook init functions
+# codebook init functions dict
 codebook_inits = {
     "random" : random_codebook,
     "class": random_class_codebook
@@ -87,6 +93,7 @@ codebook_inits = {
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################
+
 
 class LVQ(sklearn.base.BaseEstimator):
 
@@ -143,7 +150,6 @@ class LVQ(sklearn.base.BaseEstimator):
         code_distances.sort(key=lambda tup: tup[1])
 
         bmu = code_distances[0][0]
-
 
         my_logger.debug("BMU is %s" % bmu)
         return bmu

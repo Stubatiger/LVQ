@@ -1,0 +1,43 @@
+LVQ.py
+
+Beeinhaltet eine sklearn-Estimator kompatible Klasse LVQ.
+
+Typische Funktionen wie fit(), predict() und score() können aufgerufen werden.
+LVQ akzeptiert folgende Argumente:
+lrate : Größe des Lernrate als float
+epochs : Anzahl der Epochen als int
+n_codebooks : Anzahl der Codebooks als int
+distance_func : Funktionszeiger zur nutzenden Distanzfunktion
+init_codebook : Funktionszeiger zur nutzenden Initialisierungsfunktion für Codebooks
+rnd_seed : Seed für Randomgenerator
+
+Funktionen für Distanzberechnungen zwischen Samples sowie für Codebook-Initialisierungen werden hier definiert und
+im jeweiligen Dictionary deklariert.
+
+
+
+Comparison.py
+
+Dieses Skript nimmt als Argument den Pfad zu einer Konfigurationsdatei entgegen.
+Bsp.: python Comparison.py VaryingCodebooks.conf
+
+Die Konfigurationsdatei besteht aus verschiedenen Abschnitten, wobei jeder Abschnitt eine LVQ-Konfiguration beschreibt.
+Eine vollständiger Abschnitt besteht aus folgenden Parametern:
+lrate
+epochs
+n_codebooks
+distance_func
+init_codebook
+rnd_seed
+
+Die möglichen distance_func ARgumente sind zurzeit: "euclidean" und "cityblock".
+Die mögichen init_codebook Argumente sind zurzeit: "random" und "class"
+Die "Random"-Codebook Funktion erstellt Codebooks aus zufälligen Features der Trainingssamples.
+Die "Class"-Codebook Funktion erstellt Codebooks aus zufälligen Features der Trainingssamples, achtet aber darauf, dass
+die Klasse gleich ist. (Also nicht Features für Klasse A von Samples aus Klasse B gezogen werden)
+
+Comparison.py erstellt für jeden Abschnitt in der Konfigurationsdatei ein LVQ-Objekt und trainiert es für drei
+verschiedene Datasets (moons, circles, linearly_separable).
+Die Ergebnisse werden als subplots nebeneinander dargestellt.
+Die Namen der Abschnitte werden als Überschriften für die Subplots genutzt.
+Comparison.py erstellt eine .png mit den Ergebnissen die den gleichen Namen hat wie die zugehörende Konfigurationsdatei.
