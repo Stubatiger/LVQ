@@ -1,14 +1,17 @@
-import numpy as np
+import os
+import sys
+from ConfigParser import SafeConfigParser
+
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.colors import ListedColormap
+from scipy.spatial import Voronoi
+from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_moons, make_circles, make_classification
+
 import LVQ
-from ConfigParser import SafeConfigParser
-import sys
-import os
-from scipy.spatial import Voronoi
+
 h = .02  # step size in the mesh
 
 def voronoi_finite_polygons_2d(vor, radius=None):
